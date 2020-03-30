@@ -1,0 +1,17 @@
+<html>
+<body>
+<h1>OSMZ android</h1>
+<!--<img src="android_image.jpg"> -->
+<!--<img src="Pictures\OSMZ_camera\IMG_captured.jpg" onerror="this.style.visibility = 'hidden'" id="captured_image"> -->
+<!--<img src="/camera/snapshot" onerror="this.style.visibility = 'hidden'" id="captured_image">  -->
+<video src="/camera/stream" controls>
+   Your browser does not support the <code>video</code> element.
+</video>
+</body>
+<script>
+setTimeout(function(){
+   window.location.reload(1);
+   //document.getElementById("captured_image").src="Pictures\OSMZ_camera\IMG_captured.jpg";
+}, 10000);
+</script>
+</html>
