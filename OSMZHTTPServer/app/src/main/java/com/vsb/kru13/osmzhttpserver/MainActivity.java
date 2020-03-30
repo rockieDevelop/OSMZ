@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Handler mTimerHandler = new Handler();
 
     private static byte[] pictureBytes = null;
+    public static boolean safeToTakePicture = false;
 
     private Handler myHandler = new Handler(){
         @Override
@@ -77,48 +78,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }*/
 
             //try {
-                Log.d("cameraLog","taking picture");
-                //FileOutputStream fos = new FileOutputStream(pictureFile);
-                Bitmap bm = null;
-                // Converting ByteArray to Bitmap - >Rotate and Convert back to Data
-                if (data != null) {
-                    int screenWidth = getResources().getDisplayMetrics().widthPixels;
-                    int screenHeight = getResources().getDisplayMetrics().heightPixels;
-                    bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0);
+            //mPreview.restartPreview();
+            Log.d("cameraLog","taking picture");
+            //FileOutputStream fos = new FileOutputStream(pictureFile);
+            Bitmap bm = null;
+            // Converting ByteArray to Bitmap - >Rotate and Convert back to Data
+            if (data != null) {
+                int screenWidth = getResources().getDisplayMetrics().widthPixels;
+                int screenHeight = getResources().getDisplayMetrics().heightPixels;
+                bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0);
 
-                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        // Notice that width and height are reversed
-                        Bitmap scaled = Bitmap.createScaledBitmap(bm, screenHeight, screenWidth, true);
-                        int w = scaled.getWidth();
-                        int h = scaled.getHeight();
-                        // Setting post rotate to 90
-                        Matrix mtx = new Matrix();
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    // Notice that width and height are reversed
+                    Bitmap scaled = Bitmap.createScaledBitmap(bm, screenHeight, screenWidth, true);
+                    int w = scaled.getWidth();
+                    int h = scaled.getHeight();
+                    // Setting post rotate to 90
+                    Matrix mtx = new Matrix();
 
-                        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-                        int CameraEyeValue;
-                        // do something for phones running an SDK before lollipop
-                        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                            CameraEyeValue = (info.orientation + 270) % 360;
-                            CameraEyeValue = (360 - CameraEyeValue) % 360; // compensate the mirror
-                        } else { // back-facing
-                            CameraEyeValue = (info.orientation - 270 + 360) % 360;
-                        }
-
-                        mtx.postRotate(CameraEyeValue); // CameraEyeValue is default to Display Rotation
-
-                        bm = Bitmap.createBitmap(scaled, 0, 0, w, h, mtx, true);
-                    }else{// LANDSCAPE MODE
-                        //No need to reverse width and height
-                        Bitmap scaled = Bitmap.createScaledBitmap(bm, screenWidth, screenHeight, true);
-                        bm=scaled;
+                    android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+                    int CameraEyeValue;
+                    // do something for phones running an SDK before lollipop
+                    if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                        CameraEyeValue = (info.orientation + 270) % 360;
+                        CameraEyeValue = (360 - CameraEyeValue) % 360; // compensate the mirror
+                    } else { // back-facing
+                        CameraEyeValue = (info.orientation - 270 + 360) % 360;
                     }
-                }
-                // Converting the Die photo to Bitmap
 
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                pictureBytes = byteArray;
+                    mtx.postRotate(CameraEyeValue); // CameraEyeValue is default to Display Rotation
+
+                    bm = Bitmap.createBitmap(scaled, 0, 0, w, h, mtx, true);
+                }else{// LANDSCAPE MODE
+                    //No need to reverse width and height
+                    Bitmap scaled = Bitmap.createScaledBitmap(bm, screenWidth, screenHeight, true);
+                    bm=scaled;
+                }
+            }
+            // Converting the Die photo to Bitmap
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            pictureBytes = byteArray;
 
                 //fos.write(byteArray);
                 //fos.close();
@@ -127,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (IOException e) {
                 Log.d("cameraLog", "Error accessing file: " + e.getMessage());
             }*/
-
+            Log.d("cameraLog","picture taken");
+            safeToTakePicture = true;
             mPreview.restartPreview();
         }
     };
@@ -294,13 +297,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 mTimerHandler.post(new Runnable() {
                     public void run(){
-                        mCamera.takePicture(null, null, mPicture);
+                        if(safeToTakePicture) {
+                            mCamera.takePicture(null, null, mPicture);
+                            safeToTakePicture = false;
+                        }
                     }
                 });
             }
         };
 
-        mTimer1.schedule(mTt1, 1, 300);
+        mTimer1.schedule(mTt1, 1, 2000);
     }
 
     public static byte[] getPictureBytes(){

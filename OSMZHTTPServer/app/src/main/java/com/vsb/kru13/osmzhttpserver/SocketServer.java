@@ -73,6 +73,7 @@ public class SocketServer extends Thread {
                 Log.d("SERVER", "Normal exit");
             else {
                 Log.d("SERVER", "Error");
+                Log.d("SERVER", e.getMessage());
                 e.printStackTrace();
             }
         } finally {

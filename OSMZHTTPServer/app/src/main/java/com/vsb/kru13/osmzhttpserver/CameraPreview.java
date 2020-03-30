@@ -20,7 +20,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mHolder;
     private Camera mCamera;
 
-    private static ArrayList<byte[]> picturesBytes = new ArrayList<>();
+    //private static ArrayList<byte[]> picturesBytes = new ArrayList<>();
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
@@ -34,6 +34,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
+    /*
     //region Preview Callback
     private Camera.PreviewCallback mPicturePrev = new Camera.PreviewCallback(){
 
@@ -93,12 +94,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     };
     //endregion
+    */
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
             mCamera.setPreviewDisplay(holder);
-            mCamera.setPreviewCallback(mPicturePrev);
+            //mCamera.setPreviewCallback(mPicturePrev);
             mCamera.setDisplayOrientation(90);
             mCamera.startPreview();
         } catch (IOException e) {
@@ -131,8 +133,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // start preview with new settings
         try {
             mCamera.setPreviewDisplay(mHolder);
-            mCamera.setPreviewCallback(mPicturePrev);
+            //mCamera.setPreviewCallback(mPicturePrev);
             mCamera.startPreview();
+            MainActivity.safeToTakePicture = true;
 
         } catch (Exception e){
             Log.d("cameraLog", "Error starting camera preview: " + e.getMessage());
@@ -143,6 +146,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera.startPreview();
     }
 
-    public static ArrayList<byte[]> getPicturesBytes() { return picturesBytes; }
-    public static void clearPicturesBytes() { picturesBytes.clear(); }
+    //public static ArrayList<byte[]> getPicturesBytes() { return picturesBytes; }
+    //public static void clearPicturesBytes() { picturesBytes.clear(); }
 }

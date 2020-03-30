@@ -59,9 +59,6 @@ public class ClientThread extends Thread {
                     if (parts.length > 2) {
                         filename = parts[1];
                     }
-                    if(tmp.contains("/camera/snapshot")){
-                        //return picture from camera
-                    }
                 }
                 if (filename.equals("/")) filename = "/index.html";
 
@@ -78,15 +75,17 @@ public class ClientThread extends Thread {
                 Log.d("filename",filename);
                 if(filename.contains("/camera/snapshot")){
                     buffer = MainActivity.getPictureBytes();
-                    out.write("HTTP/1.0 200 OK\n");
-                    out.write("Content-Type: image/jpeg\n");
-                    //out.write("Content-Length: " + buffer.length + "\n");
-                    out.write("\n");
-                    out.flush();
+                    if(buffer != null) {
+                        out.write("HTTP/1.0 200 OK\n");
+                        out.write("Content-Type: image/jpeg\n");
+                        //out.write("Content-Length: " + buffer.length + "\n");
+                        out.write("\n");
+                        out.flush();
 
-                    o.write(buffer);
+                        o.write(buffer);
+                    }
                 }
-                else if(filename.contains("/camera/stream")){
+                /*else if(filename.contains("/camera/stream")){ //video nefunguje
                     out.write("HTTP/1.0 200 OK\n");
                     out.write("Content-Type: multipart/x-mixed-replace; boundary=\"OSMZ_boundary\"\n");
 
@@ -100,7 +99,7 @@ public class ClientThread extends Thread {
                     }
 
                     CameraPreview.clearPicturesBytes();
-                }
+                }*/
                 else {
                     Log.d("filename", path + filename);
                     File f = new File(path + filename);
