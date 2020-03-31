@@ -1,6 +1,17 @@
 <html>
 <body>
 <h1>OSMZ android</h1>
+<h5>CGI:</h5>
+<script type="text/javascript">
+function changeText(){
+    var userInput = document.getElementById('userInput').value;
+    var lnk = document.getElementById('lnk');
+    lnk.href = "/cgi-bin/" + userInput;
+}
+</script>
+<a href="" onclick='changeText()' id=lnk target="_blank">run</a> <br>
+<input type='text' id='userInput' value='command' />
+
 <!--<img src="android_image.jpg"> -->
 <!--<img src="Pictures\OSMZ_camera\IMG_captured.jpg" onerror="this.style.visibility = 'hidden'" id="captured_image"> -->
 <img src="/camera/snapshot" onerror="this.style.visibility = 'hidden'" id="captured_image"> 
@@ -12,6 +23,6 @@
 setTimeout(function(){
    window.location.reload(1);
    //document.getElementById("captured_image").src="Pictures\OSMZ_camera\IMG_captured.jpg";
-}, 3000);
+}, 5000);
 </script>
 </html>
